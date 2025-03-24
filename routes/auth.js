@@ -3,8 +3,11 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
+require('dotenv').config();
+
 const router = express.Router();
 
+console.log("🔐 SECRET_KEY being used for JWT:", process.env.SECRET_KEY);
 // Register
 router.post('/register', async (req, res) => {
     try {
