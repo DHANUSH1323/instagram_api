@@ -11,17 +11,20 @@ console.log("🔐 SECRET_KEY being used for JWT:", process.env.SECRET_KEY);
 // Register
 router.post('/register', async (req, res) => {
     try {
-        const { name, email, password } = req.body;
+        const { name, email, password, username } = req.body;
 
-        if (!name || !email || !password) {
+        if (!name || !email || !password|| !username) {
             return res.status(400).json({ message: "Please provide all fields: name, email, and password" });
         }
 
         let user = await User.findOne({ email });
         if (user) return res.status(400).json({ message: "User already exists" });
 
+        let userByUsername = await User.findOne({username});
+        if (userByUsername) return res.status(400).json({message: "username already exists"});
+
         const hashedPassword = await bcrypt.hash(password, 10);
-        user = new User({ name, email, password: hashedPassword });
+        user = new User({ name, email, password: hashedPassword, username});
         await user.save();
 
         res.status(201).json({ message: "User registered successfully" });
